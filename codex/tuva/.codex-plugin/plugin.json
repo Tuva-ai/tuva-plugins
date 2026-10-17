@@ -1,0 +1,36 @@
+{
+  "name": "tuva",
+  "version": "0.1.0",
+  "description": "Tuva's project memory for your coding agent: past decisions, papers, notebooks and session history for the project you're working in.",
+  "author": {
+    "name": "Tuva",
+    "email": "hello@tuva.ai",
+    "url": "https://tuva.ai"
+  },
+  "homepage": "https://tuva.ai",
+  "keywords": [
+    "research",
+    "memory",
+    "notebooks",
+    "papers",
+    "jupyter",
+    "context"
+  ],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Tuva",
+    "shortDescription": "Project memory for research code: decisions, papers, notebooks and past sessions.",
+    "longDescription": "Tuva's project memory for your coding agent: past decisions, papers, notebooks and session history for the project you're working in.",
+    "developerName": "Tuva",
+    "category": "Productivity",
+    "capabilities": [
+      "Read"
+    ],
+    "websiteURL": "https://tuva.ai",
+    "defaultPrompt": [
+      "What have we already tried in this project?",
+      "Summarise the papers in this project that matter for this notebook",
+      "Why did we make the last change to this analysis?"
+    ]
+  }
+}

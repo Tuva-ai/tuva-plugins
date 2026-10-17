@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "tuva": {
+      "command": "./scripts/tuva-launch",
+      "args": [
+        "mcp"
+      ],
+      "cwd": ".",
+      "env": {
+        "TUVA_MCP_CLIENT": "codex"
+      },
+      "env_vars": [
+        "TUVA_BACKEND_DIR",
+        "TUVA_DATA_DIR",
+        "XDG_DATA_HOME",
+        "XDG_STATE_HOME",
+        "XDG_CONFIG_HOME",
+        "TUVA_DAEMON_STATE_PATH",
+        "TUVA_PROJECTS_DATA_DIR",
+        "TUVA_PROJECTS_DB_PATH",
+        "TUVA_SQLITE_JOURNAL_MODE",
+        "KNOWLEDGE_INDEX_DIR",
+        "MCP_LOG_DIR",
+        "TUVA_USAGE_METER"
+      ]
+    }
+  }
+}

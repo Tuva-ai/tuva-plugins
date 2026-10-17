@@ -1,0 +1,20 @@
+{
+  "name": "tuva",
+  "interface": {
+    "displayName": "Tuva"
+  },
+  "plugins": [
+    {
+      "name": "tuva",
+      "source": {
+        "source": "local",
+        "path": "./codex/tuva"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

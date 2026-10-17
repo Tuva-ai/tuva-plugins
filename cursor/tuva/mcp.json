@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "tuva": {
+      "command": "${CURSOR_PLUGIN_ROOT}/scripts/tuva-launch",
+      "args": [
+        "mcp"
+      ],
+      "env": {
+        "TUVA_MCP_CLIENT": "cursor"
+      }
+    }
+  }
+}

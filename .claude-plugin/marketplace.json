@@ -1,0 +1,17 @@
+{
+  "name": "tuva",
+  "owner": {
+    "name": "Tuva",
+    "email": "hello@tuva.ai"
+  },
+  "metadata": {
+    "description": "Tuva's plugins for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "tuva",
+      "source": "./claude/tuva",
+      "description": "Tuva's project memory for your coding agent: past decisions, papers, notebooks and session history for the project you're working in."
+    }
+  ]
+}

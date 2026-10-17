@@ -1,0 +1,140 @@
+#!/bin/sh
+# Starts Tuva's backend code for the agent plugins (Claude Code, Codex, Cursor).
+#
+# The plugin can't ship the backend, so it finds the one already on this
+# machine. Every Tuva install puts it in the same place: the desktop app, the
+# VS Code extension and `tuva start` all stage it under
+# ~/.local/share/tuva/backend/current. Clusters and containers can point at a
+# pre-built backend with TUVA_BACKEND_DIR instead. This mirrors
+# `explicit_backend_dir` and `current_python` in cli/tuva/backend_staging.py.
+#
+#   tuva-launch mcp                 run the Tuva MCP server (stdio)
+#   tuva-launch hook <module> ...   run a hook module; a no-op without Tuva
+#   tuva-launch where               print the backend it would use
+#
+# POSIX sh only: this runs before anything Tuva-specific is known to exist.
+# Python always starts from the backend directory: `python -m` puts the working
+# directory first on sys.path, so a project with its own `services/` package
+# would otherwise run instead of Tuva. Hooks read the session's directory from
+# their payload, not from the working directory.
+
+set -u
+
+# Error text comes from docs/errors/catalog.csv (scripts/gen_error_catalog.py).
+. "$(dirname "$0")/error_catalog.sh"
+
+backend_ok() {
+	[ -x "$1/.venv/bin/python" ]
+}
+
+find_backend() {
+	explicit="${TUVA_BACKEND_DIR:-}"
+	# Expand a leading ~ the way Path.expanduser() does in backend_staging.
+	case "$explicit" in
+	"~") explicit="$HOME" ;;
+	"~/"*) explicit="$HOME/${explicit#"~/"}" ;;
+	esac
+	if [ -n "$explicit" ] && backend_ok "$explicit"; then
+		# Absolute, because mcp and hook cd into it before starting Python.
+		(cd "$explicit" 2>/dev/null && pwd) && return 0
+	fi
+	current="${XDG_DATA_HOME:-$HOME/.local/share}/tuva/backend/current"
+	# requirements.txt marks a finished stage, as in current_resolved_dir.
+	if [ -f "$current/requirements.txt" ] && backend_ok "$current"; then
+		(cd -P "$current" 2>/dev/null && pwd) && return 0
+	fi
+	return 1
+}
+
+# Hooks log their errors here instead of showing them to the agent. The log
+# itself must be appendable: a read-only file would make the shell print its
+# own error to the agent. Hooks run on every prompt, so a failure that repeats
+# (a plugin newer than the staged backend) would grow it without bound: past
+# 1 MB it moves to plugin-hooks.log.1, replacing the one before. Two hooks
+# rotating in the same instant can lose the older file; it's only a log. The
+# appendable probe runs in a subshell: a failed redirection on `:`, a special
+# builtin, exits a POSIX shell such as dash outright.
+HOOK_LOG_MAX_BYTES=1048576
+hook_log() {
+	log="${XDG_STATE_HOME:-$HOME/.local/state}/tuva/plugin-hooks.log"
+	# The braces put the redirect from the log inside the 2>/dev/null, so an
+	# unreadable log can't print the shell's own error to the agent.
+	if [ -f "$log" ] && [ "$( { wc -c <"$log"; } 2>/dev/null || echo 0)" -gt "$HOOK_LOG_MAX_BYTES" ]; then
+		mv -f "$log" "$log.1" 2>/dev/null
+	fi
+	if mkdir -p "$(dirname "$log")" 2>/dev/null && (: >>"$log") 2>/dev/null; then
+		printf '%s\n' "$log"
+	else
+		printf '%s\n' /dev/null
+	fi
+}
+
+mode="${1:-}"
+[ $# -gt 0 ] && shift
+
+case "$mode" in
+mcp)
+	if ! backend=$(find_backend); then
+		tuva_print_error install.backend_not_staged
+		exit 1
+	fi
+	# The daemon gives its services this data dir (services/scheduler/daemon_env.py).
+	# Without it, data code that falls back to os.getenv("TUVA_DATA_DIR", ".")
+	# writes into whatever cwd the agent chose, which is the plugin dir on Codex.
+	TUVA_DATA_DIR="${TUVA_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/tuva/shared}"
+	export TUVA_DATA_DIR
+	cd "$backend" || exit 1
+	PYTHONPATH="$backend" exec "$backend/.venv/bin/python" -m services.mcp "$@"
+	;;
+hook)
+	if [ $# -lt 1 ]; then
+		echo "usage: tuva-launch hook <module> [args...]" >&2 # error-copy-ok: developer usage line
+		exit 0
+	fi
+	# A hook must never get in the way of a session. Without Tuva there is
+	# nothing to do. With it, a failure still exits 0 with nothing on stderr:
+	# agents show hook stderr to the user, exit 2 blocks their prompt, and a
+	# plugin newer than the staged backend can name a module it doesn't have.
+	backend=$(find_backend) || exit 0
+	module="$1"
+	shift
+	log=$(hook_log)
+	(cd "$backend" && PYTHONPATH="$backend" "$backend/.venv/bin/python" -m "$module" "$@") 2>>"$log"
+	status=$?
+	if [ "$status" -ne 0 ]; then
+		# The scheduler log's format (`date time,ms LEVEL [tag] msg`), so the
+		# desktop's support report keeps the line: it drops lines it can't
+		# parse (desktop/src/main/logFilter.ts). It isn't a trusted source
+		# there, so only the time and the level go out, and a traceback above
+		# keeps its frames and exception type but not its message, which could
+		# carry what the hook read from the agent.
+		printf '%s ERROR [plugin-hook] %s exited %s\n' "$(date -u '+%Y-%m-%d %H:%M:%S,000')" "$module" "$status" >>"$log"
+	fi
+	exit 0
+	;;
+hook-when-waiting)
+	# Runs on every tool call, so it decides in shell: with no session waiting
+	# (the usual case) it exits without starting Python. The directory is
+	# session_hook.waiting_dir(); a marker in it is a session blocked on the
+	# user, and the hook itself checks which one.
+	waiting="${XDG_STATE_HOME:-$HOME/.local/state}/tuva/waiting"
+	for marker in "$waiting"/*; do
+		[ -e "$marker" ] && exec sh "$0" hook "$@"
+		break
+	done
+	# Read the payload anyway, so the agent never writes into a closed pipe.
+	cat >/dev/null 2>&1
+	exit 0
+	;;
+where)
+	if ! backend=$(find_backend); then
+		tuva_print_error install.backend_not_staged
+		exit 1
+	fi
+	printf '%s\n' "$backend"
+	;;
+*)
+	echo "usage: tuva-launch {mcp|hook <module> [args...]|hook-when-waiting <module> [args...]|where}" >&2 # error-copy-ok: developer usage line
+	exit 2
+	;;
+esac

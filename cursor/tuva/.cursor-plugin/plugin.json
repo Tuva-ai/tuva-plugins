@@ -1,0 +1,19 @@
+{
+  "name": "tuva",
+  "version": "0.1.0",
+  "description": "Tuva's project memory for your coding agent: past decisions, papers, notebooks and session history for the project you're working in.",
+  "author": {
+    "name": "Tuva",
+    "email": "hello@tuva.ai",
+    "url": "https://tuva.ai"
+  },
+  "homepage": "https://tuva.ai",
+  "keywords": [
+    "research",
+    "memory",
+    "notebooks",
+    "papers",
+    "jupyter",
+    "context"
+  ]
+}

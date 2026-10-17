@@ -1,0 +1,101 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook-when-waiting services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ],
+        "matcher": "permission_prompt|elicitation_dialog"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook claude",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ]
+  }
+}

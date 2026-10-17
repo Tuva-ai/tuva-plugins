@@ -1,0 +1,88 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook-when-waiting services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook codex",
+            "timeout": 3,
+            "statusMessage": "Tuva: session status"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "command": "\"${CURSOR_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook cursor",
+        "timeout": 3
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "\"${CURSOR_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook cursor",
+        "timeout": 3
+      }
+    ],
+    "stop": [
+      {
+        "command": "\"${CURSOR_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook cursor",
+        "timeout": 3
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": "\"${CURSOR_PLUGIN_ROOT}/scripts/tuva-launch\" hook services.agent_plugins.session_hook cursor",
+        "timeout": 3
+      }
+    ]
+  }
+}
