@@ -1,6 +1,6 @@
 {
   "name": "tuva",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Tuva's project memory for your coding agent: past decisions, papers, notebooks and session history for the project you're working in.",
   "author": {
     "name": "Tuva",

@@ -21,8 +21,22 @@
         "TUVA_SQLITE_JOURNAL_MODE",
         "KNOWLEDGE_INDEX_DIR",
         "MCP_LOG_DIR",
-        "TUVA_USAGE_METER"
-      ]
+        "TUVA_USAGE_METER",
+        "TUVA_SHARED_DATA_DIR",
+        "TUVA_AGENT_SESSIONS_DB_PATH",
+        "TUVA_CONVERSATIONS_INDEX_PATH",
+        "ENTROPY_HOME",
+        "LOCALAPPDATA",
+        "HF_HOME",
+        "HF_HUB_CACHE",
+        "SENTENCE_TRANSFORMERS_HOME",
+        "SLURM_JOB_ID",
+        "PBS_JOBID",
+        "LSB_JOBID",
+        "JOB_ID",
+        "FLUX_JOB_ID"
+      ],
+      "tool_timeout_sec": 150
     }
   }
 }
